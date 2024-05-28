@@ -1,27 +1,28 @@
-console.log('Script Here');
-let promise = new Promise(function(resolve, reject) {
-    let appid = '81dac2c0408f63b90a7b02974431e6e4';
-    let unit = 'metric'
-    resolve(fetch(`https://api.openweathermap.org/data/2.5/weather?lat=24.860966&lon=66.990501&appid=${appid}&units=${unit}`));
-});
+document.addEventListener('DOMContentLoaded', function () {
+    let search = document.getElementById('search');
+    let button = document.getElementById('btn');
 
-async function getData() {
-    try {
-        let response = await promise;
-        let data = await response.json(); // Await the json() method to get the data
+    async function cityNames() {
+        let appid = '81dac2c0408f63b90a7b02974431e6e4';
+        let unit = 'metric';
+        let cityName = search.value;
+        
+        try {
+            let response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${appid}&units=${unit}`);
+            let data = await response.json(); // Await the json() method to get the data
 
-        console.log('Received data successfully:', data);
+            console.log('Received data successfully:', data);
 
-        // Access specific data points and update the HTML content
-        document.getElementById('description').textContent = data.weather[0].description;
-        document.getElementById('temperature').textContent = data.main.temp;
-        document.getElementById('feels_like').textContent = data.main.feels_like;
-        document.getElementById('humidity').textContent = data.main.humidity;
-        document.getElementById('wind_speed').textContent = data.wind.speed;
-
-    } catch (error) {
-        console.log('Fetch error:', error);
+            document.getElementById('description').textContent = data.weather[0].description;
+            document.getElementById('temperature').innerText = `${data.main.temp}°C`;
+            document.getElementById('feels_like').textContent = `Feels like: ${data.main.feels_like}°C`;
+            document.getElementById('humidity').textContent = `Humidity: ${data.main.humidity}%`;
+            document.getElementById('wind_speed').textContent = `Wind speed: ${data.wind.speed} m/s`;
+            document.getElementById('city').textContent = `${data.name}`;
+        } catch (error) {
+            console.log('Fetch error:', error);
+        }
     }
-}
 
-//getData();
+    button.addEventListener('click', cityNames);
+});
